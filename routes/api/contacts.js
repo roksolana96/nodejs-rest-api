@@ -6,6 +6,7 @@ const {
     validateBody,
     isValidId,
     haveBody,
+    authenticate,
  } = require("../../middlewares")
 
 const {schemas} = require("../../models/contact")
@@ -13,17 +14,17 @@ const {schemas} = require("../../models/contact")
 const router = express.Router()
 
 
-router.get('/', ctrl.listContacts)
+router.get('/', authenticate, ctrl.listContacts)
 
-router.get('/:id',isValidId,  ctrl.getById)
+router.get('/:id',authenticate, isValidId,  ctrl.getById)
 
-router.post('/', haveBody, validateBody(schemas.addSchema), ctrl.addContact)
+router.post('/', haveBody, authenticate, validateBody(schemas.addSchema), ctrl.addContact)
 
-router.delete('/:id',isValidId, ctrl.deleteById)
+router.delete('/:id',authenticate, isValidId, ctrl.deleteById)
 
-router.put('/:id',isValidId, haveBody, validateBody(schemas.addSchema), ctrl.updateContact)
+router.put('/:id',authenticate, isValidId, haveBody, validateBody(schemas.addSchema), ctrl.updateContact)
 
-router.patch('/:id/favorite',isValidId, validateBody(schemas.updateFavoriteSchema),ctrl.updateFavorite);
+router.patch('/:id/favorite',authenticate, isValidId, validateBody(schemas.updateFavoriteSchema),ctrl.updateFavorite);
 
 module.exports = router
 

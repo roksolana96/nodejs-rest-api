@@ -3,13 +3,19 @@
 
 const {Contact} = require("../models/contact")
 
-const { HttpError } = require("../helpers/");
-const { ctrlWrapper } = require("../helpers")
+const { HttpError,ctrlWrapper } = require("../helpers/");
+// const { ctrlWrapper } = require("../helpers")
 
 
 const listContacts = async (req, res) => {
+  const { _id: owner } = req.user; //індив. збережена інф. корист
+  
+  const {page = 1, limit = 10, favorite } = req.query; //параметри пошуку
+  const skip = (page - 1) * limit;
 
-  const result = await Contact.find();
+  const result = await Contact.find({owner,favorite: favorite ?? [true, false]},
+    null,
+    {skip, limit}).populate("owner", "_id email subscription");
   res.json(result);
 }
 
@@ -24,9 +30,10 @@ const getById = async (req, res) => {
 }
 
 const addContact = async (req, res) => {
-
-  const result = await Contact.create(req.body);
+  const { _id: owner } = req.user;
+  const result = await Contact.create({ ...req.body, owner });
   res.status(201).json(result);
+
 }
 
 const deleteById = async (req, res) => {
