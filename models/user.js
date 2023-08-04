@@ -24,6 +24,10 @@ const userSchema = new Schema({
        type: String,
        default: null,
     },
+    avatarURL: {
+      type: String,
+      required: true,
+    },
   },
   {
     versionKey: false,
@@ -86,9 +90,22 @@ const loginSchema = Joi.object({
     }),
 })
 
+ //додаткове завдання hw-04 Оновлення підписки (subscription)
+const updateSubscriptionSchema = Joi.object({
+  subscription: Joi.string()
+    .valid("starter", "pro", "business")
+    .required()
+    .messages({
+      "any.required": `missing required "subscription" field`,
+      "any.only":
+        'Invalid subscription type. Valid values are "starter", "pro", or "business"',
+    }),
+});
+
 const schemas = {
     registerSchema,
     loginSchema,
+    updateSubscriptionSchema,
 
   };
 
